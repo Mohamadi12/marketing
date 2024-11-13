@@ -1,8 +1,9 @@
 import { SIDE_BAR_MENU } from "@/app/constants/menu";
-import { Menu, MonitorSmartphone } from "lucide-react";
+import { LogOut, Menu, MonitorSmartphone } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import DomainMenu from "./domain-menu";
+import MenuItem from "./menu-item";
 
 type Props = {
   onExpand(): void;
