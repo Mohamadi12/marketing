@@ -5,6 +5,7 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "./context/them-provider";
+import ClientOnly from "./ClientOnly";
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
@@ -35,14 +36,16 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} ${jakarta.className} antialiased`}
         >
-          {/* <ThemeProvider
+          <ClientOnly>
+          <ThemeProvider
             attribute="class"
             defaultTheme="light"
             disableTransitionOnChange
-          > */}
+          >
             {children}
             <Toaster />
-          {/* </ThemeProvider> */}
+          </ThemeProvider>
+          </ClientOnly>
         </body>
       </html>
     </ClerkProvider>
