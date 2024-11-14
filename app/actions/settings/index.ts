@@ -1,10 +1,10 @@
 "use server";
 import { client } from "@/app/lib/prisma";
-import { currentUser } from "@clerk/nextjs/server";
+import { clerkClient, currentUser } from "@clerk/nextjs/server";
 
 export const onIntegrateDomain = async (domain: string, icon: string) => {
-  const user = await currentUser()
-  if (!user) return
+  const user = await currentUser();
+  if (!user) return;
   try {
     const subscription = await client.user.findUnique({
       where: {
@@ -22,7 +22,7 @@ export const onIntegrateDomain = async (domain: string, icon: string) => {
           },
         },
       },
-    })
+    });
     const domainExists = await client.user.findFirst({
       where: {
         clerkId: user.id,
@@ -32,15 +32,15 @@ export const onIntegrateDomain = async (domain: string, icon: string) => {
           },
         },
       },
-    })
+    });
 
     if (!domainExists) {
       if (
-        (subscription?.subscription?.plan == 'STANDARD' &&
+        (subscription?.subscription?.plan == "STANDARD" &&
           subscription._count.domains < 1) ||
-        (subscription?.subscription?.plan == 'PRO' &&
+        (subscription?.subscription?.plan == "PRO" &&
           subscription._count.domains < 5) ||
-        (subscription?.subscription?.plan == 'ULTIMATE' &&
+        (subscription?.subscription?.plan == "ULTIMATE" &&
           subscription._count.domains < 10)
       ) {
         const newDomain = await client.user.update({
@@ -54,33 +54,32 @@ export const onIntegrateDomain = async (domain: string, icon: string) => {
                 icon,
                 chatBot: {
                   create: {
-                    welcomeMessage: 'Hey there, have  a question? Text us here',
+                    welcomeMessage: "Hey there, have  a question? Text us here",
                   },
                 },
               },
             },
           },
-        })
+        });
 
         if (newDomain) {
-          return { status: 200, message: 'Domain successfully added' }
+          return { status: 200, message: "Domain successfully added" };
         }
       }
       return {
         status: 400,
         message:
           "You've reached the maximum number of domains, upgrade your plan",
-      }
+      };
     }
     return {
       status: 400,
-      message: 'Domain already exists',
-    }
+      message: "Domain already exists",
+    };
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
-
+};
 
 export const onGetSubscriptionPlan = async () => {
   try {
@@ -136,6 +135,21 @@ export const onGetAllAccountDomains = async () => {
       },
     });
     return { ...domains };
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const onUpdatePassword = async (password: string) => {
+  try {
+    const user = await currentUser();
+    if (!user) return null;
+
+    const client = await clerkClient();
+    const update = await client.users.updateUser(user.id, { password });
+    if (update) {
+      return { status: 200, message: "Password updated" };
+    }
   } catch (error) {
     console.log(error);
   }
