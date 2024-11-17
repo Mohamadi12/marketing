@@ -26,7 +26,7 @@ const SettingsForm = ({ id, plan, name, chatBot }: Props) => {
     loading,
   } = useSettings(id);
   return (
-    <form className="flex flex-col gap-8 pb-10" onSubmit={onUpdateSettings}>
+    <form className="flex flex-col gap-8 pb-10 -z-40" onSubmit={onUpdateSettings}>
       <div className="flex flex-col gap-3">
         <h2 className="font-bold text-2xl">Domain Settings</h2>
         <Separator orientation="horizontal" />
