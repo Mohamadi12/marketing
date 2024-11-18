@@ -1,7 +1,9 @@
 import {
   onChatBotImageUpdate,
+  onCreateFilterQuestions,
   onCreateHelpDeskQuestion,
   onDeleteUserDomain,
+  onGetAllFilterQuestions,
   onGetAllHelpDeskQuestions,
   onUpdateDomain,
   onUpdatePassword,
@@ -119,31 +121,31 @@ export const useSettings = (id: string) => {
         });
       }
     }
-    reset()
-    router.refresh()
-    setLoading(false)
+    reset();
+    router.refresh();
+    setLoading(false);
   });
 
-  const onDeleteDomain = async() =>{
-    setDeleting(true)
-    const deleted = await onDeleteUserDomain(id)
-    if(deleted){
+  const onDeleteDomain = async () => {
+    setDeleting(true);
+    const deleted = await onDeleteUserDomain(id);
+    if (deleted) {
       toast({
-        title: 'Success',
-        description: deleted.message
-      })
-      setDeleting(false)
-      router.refresh()
+        title: "Success",
+        description: deleted.message,
+      });
+      setDeleting(false);
+      router.refresh();
     }
-  }
-  return{
+  };
+  return {
     register,
     onUpdateSettings,
     errors,
     loading,
     onDeleteDomain,
-    deleting
-  }
+    deleting,
+  };
 };
 
 export const useHelpDesk = (id: string) => {
@@ -154,43 +156,43 @@ export const useHelpDesk = (id: string) => {
     reset,
   } = useForm<HelpDeskQuestionsProps>({
     resolver: zodResolver(HelpDeskQuestionsSchema),
-  })
-  const { toast } = useToast()
+  });
+  const { toast } = useToast();
 
-  const [loading, setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false);
   const [isQuestions, setIsQuestions] = useState<
     { id: string; question: string; answer: string }[]
-  >([])
+  >([]);
   const onSubmitQuestion = handleSubmit(async (values) => {
-    setLoading(true)
+    setLoading(true);
     const question = await onCreateHelpDeskQuestion(
       id,
       values.question,
       values.answer
-    )
+    );
     if (question) {
-      setIsQuestions(question.questions!)
+      setIsQuestions(question.questions!);
       toast({
-        title: question.status == 200 ? 'Success' : 'Error',
+        title: question.status == 200 ? "Success" : "Error",
         description: question.message,
-      })
-      setLoading(false)
-      reset()
+      });
+      setLoading(false);
+      reset();
     }
-  })
+  });
 
   const onGetQuestions = async () => {
-    setLoading(true)
-    const questions = await onGetAllHelpDeskQuestions(id)
+    setLoading(true);
+    const questions = await onGetAllHelpDeskQuestions(id);
     if (questions) {
-      setIsQuestions(questions.questions)
-      setLoading(false)
+      setIsQuestions(questions.questions);
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    onGetQuestions()
-  }, [])
+    onGetQuestions();
+  }, []);
 
   return {
     register,
@@ -198,55 +200,56 @@ export const useHelpDesk = (id: string) => {
     errors,
     isQuestions,
     loading,
-  }
-}
+  };
+};
 
-// export const useFilterQuestions = (id: string) => {
-//   const {
-//     register,
-//     handleSubmit,
-//     formState: { errors },
-//     reset,
-//   } = useForm<FilterQuestionsProps>({
-//     resolver: zodResolver(FilterQuestionsSchema),
-//   })
-//   const { toast } = useToast()
-//   const [loading, setLoading] = useState<boolean>(false)
-//   const [isQuestions, setIsQuestions] = useState<
-//     { id: string; question: string }[]
-//   >([])
+export const useFilterQuestions = (id: string) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<FilterQuestionsProps>({
+    resolver: zodResolver(FilterQuestionsSchema),
+  });
+  const { toast } = useToast();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isQuestions, setIsQuestions] = useState<
+    { id: string; question: string }[]
+  >([]);
 
-//   const onAddFilterQuestions = handleSubmit(async (values) => {
-//     setLoading(true)
-//     const questions = await onCreateFilterQuestions(id, values.question)
-//     if (questions) {
-//       setIsQuestions(questions.questions!)
-//       toast({
-//         title: questions.status == 200 ? 'Success' : 'Error',
-//         description: questions.message,
-//       })
-//       reset()
-//       setLoading(false)
-//     }
-//   })
+  const onAddFilterQuestions = handleSubmit(async (values) => {
+    setLoading(true);
+    const questions = await onCreateFilterQuestions(id, values.question);
+    if (questions) {
+      setIsQuestions(questions.questions!);
+      toast({
+        title: questions.status == 200 ? "Success" : "Error",
+        description: questions.message,
+      });
+      reset();
+      setLoading(false);
+    }
+  });
 
-//   const onGetQuestions = async () => {
-//     setLoading(true)
-//     const questions = await onGetAllFilterQuestions(id)
-//     if (questions) {
-//       setIsQuestions(questions.questions)
-//       setLoading(false)
-//     }
-//   }
+  const onGetQuestions = async () => {
+    setLoading(true);
+    const questions = await onGetAllFilterQuestions(id);
+    if (questions) {
+      setIsQuestions(questions.questions);
+      setLoading(false);
+    }
+  };
 
-//   useEffect(() => {
-//     onGetQuestions()
-//   }, [])
+  useEffect(() => {
+    onGetQuestions();
+  }, []);
 
-//   return {
-//     loading,
-//     onAddFilterQuestions,
-//     register,
-//     errors,
-//     isQuestions,
-//   }
+  return {
+    loading,
+    onAddFilterQuestions,
+    register,
+    errors,
+    isQuestions,
+  };
+};
