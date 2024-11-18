@@ -8,6 +8,8 @@ import PremiumBadge from "@/public/icons/premium-badge";
 import EditChatbotIcon from "./edit-chatbot-icon";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Loader } from "../../loader";
 
 const WelcomeMessage = dynamic(
   () => import("./greetings-message").then((props) => props.default),
@@ -55,7 +57,7 @@ const SettingsForm = ({ id, plan, name, chatBot }: Props) => {
         </div>
         <Separator orientation="horizontal" />
         <div className="grid md:grid-cols-2">
-          <div className="col-span-1 flex flex-col gap-5">
+          <div className="col-span-1 flex flex-col gap-5 order-last md:order-1">
             <EditChatbotIcon
               chatBot={chatBot}
               register={register}
@@ -77,6 +79,19 @@ const SettingsForm = ({ id, plan, name, chatBot }: Props) => {
             />
           </div>
         </div>
+      </div>
+      <div className="flex gap-5 justify-end">
+        <Button
+          onClick={onDeleteDomain}
+          variant="destructive"
+          type="button"
+          className="px-10 h-[50px]"
+        >
+          <Loader loading={deleting}>Delete Domain</Loader>
+        </Button>
+        <Button type="submit" className="w-[100px] h-[50px]">
+          <Loader loading={loading}>Save</Loader>
+        </Button>
       </div>
     </form>
   );
